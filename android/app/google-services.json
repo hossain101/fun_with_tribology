@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "942169531456",
+    "project_id": "fun-with-tribology",
+    "storage_bucket": "fun-with-tribology.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942169531456:android:f9e6b609570a903d26eba5",
+        "android_client_info": {
+          "package_name": "com.shoaib.fun_with_tribology"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942169531456-lh0j48bncim134ho9q2u4ml4v3p6k9ln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCetjyw3NLCZqwKkqp4bQwlrTX7Qomyi0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942169531456-lh0j48bncim134ho9q2u4ml4v3p6k9ln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
