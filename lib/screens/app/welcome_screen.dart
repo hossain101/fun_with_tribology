@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:fun_with_tribology/constants.dart';
@@ -45,17 +46,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent.withOpacity(_controller.value),
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'images/signup.png',
-            ),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
+      //KScreenDecoration is in the constants.dart, it is a container used for the decoration of the welcome,login and registration screen.
+      body: KScreenDecoration(
+        decorationChild: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
@@ -67,18 +60,20 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 ),
                 Flexible(
                   child: TypewriterAnimatedTextKit(
-                      text: ['Fun With Trobology'],
-                      textStyle: kAnimatedTextKitTextStyle),
+                    text: const ['Fun With Tribology'],
+                    textStyle: kAnimatedTextKitTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 RoundedButton(
                   title: 'Login',
-                  btnColor: Colors.lightBlueAccent,
+                  btnColor: Colors.black12.withOpacity(0.05),
                   funcOnPressed: () =>
                       Navigator.pushNamed(context, LoginScreen.id),
                 ),
                 RoundedButton(
                   title: 'Register',
-                  btnColor: Colors.blueAccent,
+                  btnColor: Colors.black12.withOpacity(0.05),
                   funcOnPressed: () {
                     Navigator.pushNamed(context, RegistrationScreen.id);
                   },

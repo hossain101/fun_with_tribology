@@ -23,11 +23,13 @@ class RoundedButton extends StatelessWidget {
         color: btnColor,
         borderRadius: BorderRadius.circular(30.0),
         child: MaterialButton(
+          focusColor: Colors.white70.withOpacity(.005),
           onPressed: funcOnPressed,
           minWidth: 200.0,
           height: 42.0,
           child: Text(
             title,
+            style: TextStyle(color: Colors.white, fontSize: 25),
           ),
         ),
       ),
