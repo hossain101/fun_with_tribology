@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
+import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
 import 'package:fun_with_tribology/screens/app/editProfile_screen.dart';
+import 'package:fun_with_tribology/screens/app/hangman/hangman_menu.dart';
+import 'package:fun_with_tribology/screens/app/puzzle/puzzle_menu.dart';
 
 class MenuScreen extends StatelessWidget {
   static String id = 'menu_screen';
@@ -16,30 +19,14 @@ class MenuScreen extends StatelessWidget {
           child: Column(
             children: [
               //used Align to move the button to the right.
-              Align(
-                alignment: Alignment.topRight,
-                child: Flexible(
-                  child: SizedBox(
-                    width: 150,
-                    height: 50,
-                    child: MaterialButton(
-                      padding: EdgeInsets.only(left: 20),
-                      onPressed: () {
-                        Navigator.pushNamed(context, EditProfile.id);
-                      },
-                      child: Row(
-                        children: const [
-                          Icon(Icons.person),
-                          Text(
-                            'Edit Profile',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              TopRightButton(
+                title: 'Edit Profile',
+                btnIcon: Icons.person,
+                funcOnPressed: () =>
+                    Navigator.pushNamed(context, EditProfile.id),
+                btnPadding: EdgeInsets.only(left: 20),
               ),
+
               //this is the widget for fun puzzle
               Padding(
                 padding: const EdgeInsets.fromLTRB(70, 5, 70, 10),
@@ -50,7 +37,9 @@ class MenuScreen extends StatelessWidget {
               RoundedButton(
                 title: 'FUN PUZZLES',
                 btnColor: Colors.grey.withOpacity(.6),
-                funcOnPressed: () {},
+                funcOnPressed: () {
+                  Navigator.pushNamed(context, PuzzleMenu.id);
+                },
               ),
 
               Flexible(
@@ -59,7 +48,9 @@ class MenuScreen extends StatelessWidget {
               RoundedButton(
                 title: 'FUN HANGMAN',
                 btnColor: Colors.grey.withOpacity(.6),
-                funcOnPressed: () {},
+                funcOnPressed: () {
+                  Navigator.pushNamed(context, HangmanMenu.id);
+                },
               ),
             ],
           ),

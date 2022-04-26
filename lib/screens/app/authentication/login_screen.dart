@@ -1,31 +1,46 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
+import 'dart:convert' show json;
+
+import 'package:flutter/material.dart';
+import 'package:fun_with_tribology/screens/app/menu_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:fun_with_tribology/screens/app/authentication/registration_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../../constants.dart';
-import 'components/rounded_button.dart';
-import 'login_screen.dart';
+import '../../../constants.dart';
+import '../components/rounded_button.dart';
 
-class RegistrationScreen extends StatefulWidget {
-  static const String id = 'registration_screen';
+class LoginScreen extends StatefulWidget {
+  static const String id = 'login_screen';
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   late String email, password;
   bool showSpinner = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
-      body: KScreenDecoration(
-        decorationChild: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          child: SingleChildScrollView(
+      backgroundColor: Colors.white,
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: KScreenDecoration(
+          decorationChild: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
@@ -45,31 +60,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     child: AnimatedTextKit(
                       totalRepeatCount: 5,
                       animatedTexts: [
-                        FlickerAnimatedText(
-                          'Learning',
+                        WavyAnimatedText(
+                          'Welcome Back!',
                           textStyle: TextStyle(
                             fontSize: 55.0,
                             color: Colors.white.withOpacity(.7),
                           ),
-                          speed: Duration(seconds: 2),
-                        ),
-                        FlickerAnimatedText(
-                          'Made',
-                          textStyle: TextStyle(
-                            fontSize: 55.0,
-                            color: Colors.white.withOpacity(.7),
-                          ),
-                          speed: Duration(seconds: 2),
-                        ),
-                        FlickerAnimatedText(
-                          'Fun',
-                          textStyle: TextStyle(
-                            fontSize: 55.0,
-                            color: Colors.white.withOpacity(.7),
-                          ),
-                          speed: Duration(seconds: 2),
                         ),
                       ],
+                      isRepeatingAnimation: true,
                     ),
                   ),
                   TextField(
@@ -80,8 +79,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       //Do something with the user input.
                     },
                     decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your E-mail',
-                    ),
+                        hintText: 'Enter your email'),
                   ),
                   SizedBox(
                     height: 8.0,
@@ -96,24 +94,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     decoration: kTextFieldDecoration.copyWith(
                         hintText: 'Enter your password'),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 24.0,
                   ),
                   RoundedButton(
-                    title: 'Register',
+                    title: 'Login',
                     btnColor: Colors.black12.withOpacity(0.05),
                     funcOnPressed: () async {
                       setState(() {
                         showSpinner = true;
                       });
-                      print(email);
-                      print(password);
                       try {
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        if (newUser != null) {
-                          Navigator.pushNamed(context, LoginScreen.id);
+                        final user = await _auth.signInWithEmailAndPassword(
+                            email: email, password: password);
+                        if (user != Null) {
+                          Navigator.pushNamed(context, MenuScreen.id);
                           setState(() {
                             showSpinner = false;
                           });
@@ -122,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         print(e);
                       }
                     },
-                  )
+                  ),
                 ],
               ),
             ),
@@ -132,3 +127,5 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 }
+
+//

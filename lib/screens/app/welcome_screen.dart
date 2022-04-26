@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
-import 'package:fun_with_tribology/screens/app/login_screen.dart';
-import 'package:fun_with_tribology/screens/app/registration_screen.dart';
+import 'package:fun_with_tribology/screens/app/authentication/login_screen.dart';
+import 'package:fun_with_tribology/screens/app/authentication/registration_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -60,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 ),
                 Flexible(
                   child: TypewriterAnimatedTextKit(
-                    text: const ['Fun With Tribology'],
+                    text: const ['Fun with Tribology'],
                     textStyle: kAnimatedTextKitTextStyle,
                     textAlign: TextAlign.center,
                   ),
