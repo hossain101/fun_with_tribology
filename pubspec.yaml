@@ -45,6 +45,7 @@ dependencies:
   rxdart: ^0.27.3
   animations: ^2.0.2
   google_fonts: ^2.3.1
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

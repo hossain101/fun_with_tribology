@@ -1,9 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fun_with_tribology/screens/app/menu_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -108,7 +111,40 @@ class _LoginScreenState extends State<LoginScreen> {
                         final user = await _auth.signInWithEmailAndPassword(
                             email: email, password: password);
                         if (user != Null) {
+                          Fluttertoast.showToast(msg: 'Login Successful');
                           Navigator.pushNamed(context, MenuScreen.id);
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        }
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                  ),
+                  RoundedButton(
+                    title: 'Login With Google',
+                    btnColor: Colors.black12.withOpacity(0.05),
+                    funcOnPressed: () async {
+                      setState(() {
+                        showSpinner = true;
+                      });
+                      try {
+                        final GoogleSignInAccount? googleUser =
+                            await GoogleSignIn().signIn();
+                        final GoogleSignInAuthentication googleAuth =
+                            await googleUser!.authentication;
+                        final OAuthCredential credential =
+                            GoogleAuthProvider.credential(
+                                idToken: googleAuth.idToken,
+                                accessToken: googleAuth.accessToken);
+
+                        final user = _auth.signInWithCredential(credential);
+
+                        if (user != Null) {
+                          Fluttertoast.showToast(msg: 'Login Successful');
+                          Navigator.pushNamed(context, MenuScreen.id);
+
                           setState(() {
                             showSpinner = false;
                           });
@@ -127,5 +163,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-//

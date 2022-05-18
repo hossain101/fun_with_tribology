@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "942169531456-qlc2tvvt5rat93fp8m0g4r954nvhffka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shoaib.fun_with_tribology",
+            "certificate_hash": "72e46809abaf4dd365614e9587bc7969e0d4d6b8"
+          }
+        },
+        {
           "client_id": "942169531456-lh0j48bncim134ho9q2u4ml4v3p6k9ln.apps.googleusercontent.com",
           "client_type": 3
         }
