@@ -1,14 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fun_with_tribology/screens/app/editProfile_screen.dart';
+import 'package:fun_with_tribology/screens/app/admin_function/hangman/add_hangman_question_screen.dart';
+import 'package:fun_with_tribology/screens/app/admin_function/puzzle/add_puzzle_question_screen.dart';
+import 'package:fun_with_tribology/screens/app/admin_function/admin_menu_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/editProfile_screen.dart';
 import 'package:fun_with_tribology/screens/app/authentication/login_screen.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_menu.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_scoreboard.dart';
-import 'package:fun_with_tribology/screens/app/menu_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/menu_screen.dart';
 import 'package:fun_with_tribology/screens/app/authentication/registration_screen.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_menu.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_scoreboard.dart';
-import 'package:fun_with_tribology/screens/app/welcome_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/welcome_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
@@ -38,6 +41,9 @@ class FunWithTribology extends StatelessWidget {
         HangmanMenu.id: (context) => HangmanMenu(),
         PuzzleScoreBoard.id: (context) => PuzzleScoreBoard(),
         HangmanScoreBoard.id: (context) => HangmanScoreBoard(),
+        AdminMenu.id: (context) => AdminMenu(),
+        AddPuzzleQuestion.id: (context) => AddPuzzleQuestion(),
+        AddHangmanQuestion.id: (context) => AddHangmanQuestion(),
       },
     );
   }

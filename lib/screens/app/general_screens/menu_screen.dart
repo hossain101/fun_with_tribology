@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
 import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
-import 'package:fun_with_tribology/screens/app/editProfile_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/editProfile_screen.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_menu.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_menu.dart';
 

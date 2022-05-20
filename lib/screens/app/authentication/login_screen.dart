@@ -7,7 +7,8 @@ import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fun_with_tribology/screens/app/menu_screen.dart';
+import 'package:fun_with_tribology/screens/app/admin_function/admin_menu_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/menu_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -110,7 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         final user = await _auth.signInWithEmailAndPassword(
                             email: email, password: password);
-                        if (user != Null) {
+                        if (user != Null && email == 'admin@mail.com') {
+                          Fluttertoast.showToast(msg: 'Login Successful');
+                          Navigator.pushNamed(context, AdminMenu.id);
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        } else if (user != Null) {
                           Fluttertoast.showToast(msg: 'Login Successful');
                           Navigator.pushNamed(context, MenuScreen.id);
                           setState(() {
