@@ -31,7 +31,7 @@ class FunWithTribology extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.acmeTextTheme(),
       ),
-      initialRoute: HangmanGame.id,
+      initialRoute: WelcomeScreen.id,
       routes: {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
