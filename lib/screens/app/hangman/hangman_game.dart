@@ -18,8 +18,8 @@ class HangmanGame extends StatefulWidget {
 }
 
 class _HangmanGameState extends State<HangmanGame> {
-  late String word = '';
-  late String clue = '';
+  String? word;
+  String? clue;
 
   Future<void> getWord() async {
     final hangmanQuestion3 =
@@ -41,6 +41,7 @@ class _HangmanGameState extends State<HangmanGame> {
     clue = hangmanQuestion1.docs[hangmanQuestion1.size - 1]['clue']
         .toString()
         .toUpperCase();
+    setState(() {});
   }
 
   @override
@@ -49,6 +50,7 @@ class _HangmanGameState extends State<HangmanGame> {
     super.initState();
     getWord();
     getClue();
+    setState(() {});
   }
 
   @override
@@ -99,7 +101,7 @@ class _HangmanGameState extends State<HangmanGame> {
                   ),
                 ),
                 AutoSizeText(
-                  clue,
+                  clue.toString(),
                   style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,
@@ -110,6 +112,7 @@ class _HangmanGameState extends State<HangmanGame> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: word
+                        .toString()
                         .split('')
                         .map(
                           (e) => Letter(
@@ -150,7 +153,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                         // getWord();
                                       });
 
-                                      if (!word.split('').contains(
+                                      if (!word!.split('').contains(
                                             alphabets.toUpperCase(),
                                           )) {
                                         HangmanGameLogic.tries++;
