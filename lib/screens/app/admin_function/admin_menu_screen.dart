@@ -22,20 +22,6 @@ class AdminMenu extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //used Align to move the button to the right.
-                TopRightButton(
-                  title: 'Edit Profile',
-                  btnIcon: Icons.person,
-                  funcOnPressed: () => Null,
-                  btnPadding: EdgeInsets.only(left: 20),
-                ),
-
-                //this is the widget for fun puzzle
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(70, 5, 70, 10),
-                // ),
-                //
-
                 Spacer(),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +43,6 @@ class AdminMenu extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 Spacer(),
               ],
             ),

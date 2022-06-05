@@ -1,18 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
 import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//here the firestore initialization took place
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 final _auth = FirebaseAuth.instance;
 
-//
+// This is a stateless widget because the screen doesn't need to be updated
 
-class AddHangmanQuestion extends StatelessWidget {
+class AddHangmanQuestion extends StatefulWidget {
   static String id = 'add_hangman_question_screen';
+
+  @override
+  State<AddHangmanQuestion> createState() => _AddHangmanQuestionState();
+}
+
+class _AddHangmanQuestionState extends State<AddHangmanQuestion> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   void getCurrentUser() async {
@@ -27,9 +35,30 @@ class AddHangmanQuestion extends StatelessWidget {
     }
   }
 
-  QuestionField _questionField1 = QuestionField(1);
-  QuestionField _questionField2 = QuestionField(2);
-  QuestionField _questionField3 = QuestionField(3);
+  var questionNumber;
+
+  Future<void> getQuestionNumber() async {
+    final hangmanQuestion =
+        await _firestore.collection('HangmanQuestion').get();
+
+    print(
+        'This is the question number   ${hangmanQuestion.docs[hangmanQuestion.size - 1]['questionNo']}');
+
+    questionNumber = await int.parse(
+            hangmanQuestion.docs[hangmanQuestion.size - 1]['questionNo']) +
+        1;
+
+    print('What will be the value of this? $questionNumber');
+  }
+
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+    getQuestionNumber();
+  }
+
+  QuestionField _questionField1 = QuestionField();
 
   @override
   Widget build(BuildContext context) {
@@ -38,39 +67,30 @@ class AddHangmanQuestion extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: KScreenDecoration(
           decorationChild: SafeArea(
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: [
-                  _questionField1,
-                  _questionField2,
-                  _questionField3,
-                  RaisedButton(
-                    onPressed: () {
-                      _firestore.collection('HangmanQuestion1').add({
-                        'questionNo': _questionField1.questionNo,
-                        'word': _questionField1.word,
-                        'clue': _questionField1.clue,
-                        'time': FieldValue.serverTimestamp()
-                      });
+            child: ListView(
+              children: [
+                _questionField1,
+                RaisedButton(
+                  onPressed: () {
+                    final questionCollection =
+                        _firestore.collection('HangmanQuestion');
 
-                      _firestore.collection('HangmanQuestion2').add({
-                        'questionNo': _questionField2.questionNo,
-                        'word': _questionField2.word,
-                        'clue': _questionField2.clue,
-                        'time': FieldValue.serverTimestamp()
-                      });
-                      _firestore.collection('HangmanQuestion3').add({
-                        'questionNo': _questionField3.questionNo,
-                        'word': _questionField3.word,
-                        'clue': _questionField3.clue,
-                        'time': FieldValue.serverTimestamp()
-                      });
-                    },
-                    child: Text("submit"),
-                  ),
-                ],
-              ),
+                    questionCollection
+                        .doc('question${questionNumber.toString()}')
+                        .set({
+                      'questionNo': '${questionNumber.toString()}',
+                      'word': _questionField1.word,
+                      'clue': _questionField1.clue,
+                      'time': FieldValue.serverTimestamp()
+                    });
+
+                    Fluttertoast.showToast(msg: 'Question Upload Successful');
+
+                    Navigator.pop(context);
+                  },
+                  child: Text("submit"),
+                ),
+              ],
             ),
           ),
         ),
@@ -81,21 +101,22 @@ class AddHangmanQuestion extends StatelessWidget {
 
 class QuestionField extends StatelessWidget {
   late String word, clue;
-  late int questionNo;
 
-  QuestionField(this.questionNo);
+  QuestionField();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [
           TextFormField(
+            style: TextStyle(color: Colors.white, fontSize: 25),
             decoration: InputDecoration(
-              labelText: '$questionNo)Word',
-              labelStyle: TextStyle(color: Colors.white),
+              labelText: 'Word',
+              labelStyle: TextStyle(color: Colors.white, fontSize: 45),
               hintText: 'Enter a word',
+              hintStyle: TextStyle(color: Colors.white70, fontSize: 20),
             ),
             onChanged: (value) {
               word = value;
@@ -108,10 +129,12 @@ class QuestionField extends StatelessWidget {
             },
           ),
           TextFormField(
+              style: TextStyle(color: Colors.white, fontSize: 25),
               decoration: InputDecoration(
                 labelText: 'Clue',
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: Colors.white, fontSize: 45),
                 hintText: 'Enter a clue',
+                hintStyle: TextStyle(color: Colors.white70, fontSize: 20),
               ),
               onChanged: (value) {
                 clue = value;

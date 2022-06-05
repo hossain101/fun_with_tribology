@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
 import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
+import 'package:fun_with_tribology/screens/app/hangman/hangman_game.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_scoreboard.dart';
 
 class HangmanMenu extends StatelessWidget {
@@ -32,13 +33,15 @@ class HangmanMenu extends StatelessWidget {
                         title: 'Score Board',
                         btnColor: Colors.grey.withOpacity(.6),
                         funcOnPressed: () {
-                          Navigator.pushNamed(context, HangmanScoreBoard.id);
+                          Navigator.pushNamed(context, HangmanGame.id);
                         },
                       ),
                       RoundedButton(
                         title: 'Play Game',
                         btnColor: Colors.grey.withOpacity(.6),
-                        funcOnPressed: () {},
+                        funcOnPressed: () {
+                          Navigator.pushNamed(context, HangmanGame.id);
+                        },
                       ),
                     ],
                   ),
