@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
 import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
+import 'package:fun_with_tribology/screens/app/puzzle/puzzle_game.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_scoreboard.dart';
 
 class PuzzleMenu extends StatelessWidget {
@@ -38,7 +39,9 @@ class PuzzleMenu extends StatelessWidget {
                       RoundedButton(
                         title: 'Play Game',
                         btnColor: Colors.grey.withOpacity(.6),
-                        funcOnPressed: () {},
+                        funcOnPressed: () {
+                          Navigator.pushNamed(context, PuzzleGame.id);
+                        },
                       ),
                     ],
                   ),
