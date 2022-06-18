@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'dart:typed_data';
 
@@ -110,7 +111,7 @@ class SlidePuzzleWidget extends StatefulWidget {
 
   //set image use for background
   final Image imageBackGround;
-  final int? sizePuzzle;
+  final int sizePuzzle;
 
   @override
   State<SlidePuzzleWidget> createState() => _SlidePuzzleWidgetState();
@@ -200,7 +201,9 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                       left: slideObject.posCurrent.dx,
                       top: slideObject.posCurrent.dy,
                       child: GestureDetector(
-                        onTap: () {}, //changePos(slideObject.indexCurrent),
+                        onTap: () {
+                          changePos(slideObject.indexCurrent);
+                        }, //changePos(slideObject.indexCurrent),
                         child: SizedBox(
                           width: slideObject.size.width,
                           height: slideObject.size.height,
@@ -333,16 +336,124 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     slideObjects?.last.empty = true;
 
+    //swap block place
+    //swap true we swap horizontal line, false we swap vertical
+
+    bool swap = true;
+    setState((){});
+    return;
+
+    for (var i = 0; i < widget.sizePuzzle * 20; i++) {
+      for (var j = 0; j < widget.sizePuzzle; j++) {
+        SlideObject slideObjectEmpty = getEmptyObject();
+
+        int emptyIndex = slideObjectEmpty.indexCurrent;
+
+        int randKey;
+
+        if (swap) {
+          //horizontal swap
+
+          int row = emptyIndex ~/ widget.sizePuzzle;
+          randKey =
+              row * widget.sizePuzzle + new Random().nextInt(widget.sizePuzzle);
+        } else {
+          int col = emptyIndex % widget.sizePuzzle;
+          randKey =
+              widget.sizePuzzle * new Random().nextInt(widget.sizePuzzle) + col;
+        }
+
+        changePos(randKey);
+
+        swap = !swap;
+      }
+    }
+
     //generating random image
 
     //get empty slide object form list
+  }
 
-    SlideObject getEmptyObject(){
-      return slideObjects?.firstWhere((element) => element.empty);
+  SlideObject getEmptyObject() {
+    return slideObjects?.firstWhere((element) => element.empty);
+  }
+
+  changePos(int indexCurrent) {
+    SlideObject slideObjectEmpty = getEmptyObject();
+
+    // get index of empty slide object
+
+    int emptyIndex = slideObjectEmpty.indexCurrent;
+
+    // min and max index based on vertical or horizontal
+
+    int minIndex = min(indexCurrent, emptyIndex);
+    int maxIndex = max(indexCurrent, emptyIndex);
+
+    //temp list moves involve
+
+    List<SlideObject>? rangeMoves = [];
+
+    //check if current index from vertical/horizontal side
+
+    if (indexCurrent % widget.sizePuzzle == emptyIndex % widget.sizePuzzle) {
+      //same vertical line
+
+      rangeMoves = slideObjects!
+          .where((element) =>
+              element.indexCurrent % widget.sizePuzzle ==
+              indexCurrent % widget.sizePuzzle)
+          .cast<SlideObject>()
+          .toList();
+    } else if (indexCurrent ~/ widget.sizePuzzle ==
+        emptyIndex ~/ widget.sizePuzzle) {
+      rangeMoves = slideObjects!.cast<SlideObject>();
+    } else {
+      rangeMoves = [];
     }
 
-    changePos(int indexCurrent){
-      SlideObject  slideObjectEmpty= getEmptyObject();
+    rangeMoves = rangeMoves
+        .where((puzzle) =>
+            puzzle.indexCurrent >= minIndex &&
+            puzzle.indexCurrent <= maxIndex &&
+            puzzle.indexCurrent != emptyIndex)
+        .toList();
+
+    //check empty Index under or above current touch
+
+    if (emptyIndex < indexCurrent)
+      rangeMoves.sort((a, b) => a.indexCurrent < b.indexCurrent ? 1 : 0);
+    else
+      rangeMoves.sort((a, b) => a.indexCurrent < b.indexCurrent ? 0 : 1);
+
+    //check if rangeMoves is exist then proceed swap position
+
+    if (rangeMoves.length > 0) {
+      int tempIndex = rangeMoves[0].indexCurrent;
+
+      Offset tempPos = rangeMoves[0].posCurrent;
+      for (var i = 0; i < rangeMoves.length; i++) {
+        rangeMoves[i].indexCurrent = rangeMoves[i].indexCurrent;
+        rangeMoves[i].posCurrent = rangeMoves[i].posCurrent;
+      }
+
+      rangeMoves.last.indexCurrent = slideObjectEmpty.indexCurrent;
+      rangeMoves.last.posCurrent = slideObjectEmpty.posCurrent;
+
+      slideObjectEmpty.indexCurrent = tempIndex;
+      slideObjectEmpty.posCurrent = tempPos;
+    }
+
+    //
+    if (slideObjects!
+            .where((slideObject) =>
+                slideObject.indexCurrent == slideObject.indexDefault - 1)
+            .length ==
+        slideObjects!.length) {
+      print('success bitches');
+      success = true;
+    } else {
+      success = false;
     }
 
     setState(() {});
