@@ -130,6 +130,14 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
   //successFlag
   bool success = false;
 
+  //flag already start slide
+
+  //flag already start slide
+  bool startSlide = false;
+
+  //check current swap process for reverse checking
+  late List<int> process;
+
   @override
   Widget build(BuildContext context) {
     size = Size(widget.size.width - widget.innerPadding * 2,
@@ -255,14 +263,18 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                   startSlide?null:()=>  reversePuzzle();
+                  },
                   child: Text('Reverse'),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    clearPuzzle();
+                  },
                   child: Text('Clear'),
                 ),
               ),
@@ -336,18 +348,27 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     slideObjects?.last.empty = true;
 
+
+    startSlide = false;
+    setState((){});
+
     //swap block place
     //swap true we swap horizontal line, false we swap vertical
 
     bool swap = true;
-    setState((){});
-    return;
+    // setState((){});
+    // return;
 
+    process = [];
+
+    //size puzzle shuffle
     for (var i = 0; i < widget.sizePuzzle * 20; i++) {
       for (var j = 0; j < widget.sizePuzzle; j++) {
         SlideObject slideObjectEmpty = getEmptyObject();
 
         int emptyIndex = slideObjectEmpty.indexCurrent;
+
+        process.add(emptyIndex);
 
         int randKey;
 
@@ -369,6 +390,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
       }
     }
 
+   // startSlide = false;
+    setState((){});
     //generating random image
 
     //get empty slide object form list
@@ -432,9 +455,9 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
       int tempIndex = rangeMoves[0].indexCurrent;
 
       Offset tempPos = rangeMoves[0].posCurrent;
-      for (var i = 0; i < rangeMoves.length; i++) {
-        rangeMoves[i].indexCurrent = rangeMoves[i].indexCurrent;
-        rangeMoves[i].posCurrent = rangeMoves[i].posCurrent;
+      for (var i = 0; i < rangeMoves.length - 1; i++) {
+        rangeMoves[i].indexCurrent = rangeMoves[i + 1].indexCurrent;
+        rangeMoves[i].posCurrent = rangeMoves[i + 1].posCurrent;
       }
 
       rangeMoves.last.indexCurrent = slideObjectEmpty.indexCurrent;
@@ -449,14 +472,38 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
             .where((slideObject) =>
                 slideObject.indexCurrent == slideObject.indexDefault - 1)
             .length ==
-        slideObjects!.length) {
-      print('success bitches');
+        slideObjects!.length&&!startSlide) {
+      print('success');
       success = true;
     } else {
       success = false;
     }
 
     setState(() {});
+  }
+
+  void clearPuzzle() {
+    startSlide = true;
+    slideObjects = null;
+    setState(() {});
+  }
+
+  Future<void> reversePuzzle() async {
+    startSlide = true;
+    setState(() {});
+
+    await Stream.fromIterable(process.reversed)
+        .asyncMap(
+          (event) async => await Future.delayed(
+            Duration(microseconds: 50),
+          ).then(
+            (value) => changePos(event),
+          ),
+        )
+        .toList();
+
+    process = [];
+    setState((){});
   }
 }
 
