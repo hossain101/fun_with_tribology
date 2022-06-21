@@ -363,7 +363,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     //size puzzle shuffle
     for (var i = 0; i < widget.sizePuzzle * 20; i++) {
-      for (var j = 0; j < widget.sizePuzzle; j++) {
+      for (var j = 0; j < widget.sizePuzzle/2; j++) {
         SlideObject slideObjectEmpty = getEmptyObject();
 
         int emptyIndex = slideObjectEmpty.indexCurrent;
@@ -501,6 +501,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
           ),
         )
         .toList();
+
 
     process = [];
     setState((){});
