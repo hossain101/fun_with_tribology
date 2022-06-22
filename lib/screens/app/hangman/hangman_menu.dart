@@ -33,7 +33,7 @@ class HangmanMenu extends StatelessWidget {
                         title: 'Score Board',
                         btnColor: Colors.grey.withOpacity(.6),
                         funcOnPressed: () {
-                          Navigator.pushNamed(context, HangmanGame.id);
+                          Navigator.pushNamed(context, HangmanScoreBoard.id);
                         },
                       ),
                       RoundedButton(

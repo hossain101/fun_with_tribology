@@ -223,7 +223,7 @@ class _HangmanGameState extends State<HangmanGame> {
 
 
                                           _firestore.collection('score').doc('${loggedInUser!.email}').set({
-                                            'score': score.round().toString(),
+                                            'score': score.round(),
                                             'sender': loggedInUser!.email,
                                             'time': FieldValue.serverTimestamp()});
                                           HangmanGameLogic.tries = 0;
@@ -244,7 +244,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                           });
 
                                           _firestore.collection('score').doc('${loggedInUser!.email}').set({
-                                            'score': score.round().toString(),
+                                            'score': score.round(),
                                             'sender': loggedInUser!.email,
                                             'time': FieldValue.serverTimestamp()});
                                           HangmanGameLogic.tries = 0;
