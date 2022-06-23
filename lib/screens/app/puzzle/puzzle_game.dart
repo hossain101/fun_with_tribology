@@ -21,8 +21,8 @@ class PuzzleGame extends StatefulWidget {
 }
 
 class _PuzzleGameState extends State<PuzzleGame> {
-  //this is the default value for the slider
-  double valueSlider = 2;
+  //this is where i can change the grid size of the puzzle
+  double valueSlider = 3;
 
   GlobalKey<_SlidePuzzleWidgetState> globalKey = GlobalKey();
 
@@ -40,9 +40,9 @@ class _PuzzleGameState extends State<PuzzleGame> {
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 20.0),
                   child: Text(
-                    'Puzzle Grid ${valueSlider.toInt()} X ${valueSlider.toInt()}',
+                    'Fun Puzzle',
                     style: TextStyle(
-                      fontSize: 30.0,
+                      fontSize: 60.0,
                       color: Colors.white,
                     ),
                   ),
@@ -50,7 +50,7 @@ class _PuzzleGameState extends State<PuzzleGame> {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(width: _border, color: Colors.white),
-                    color: Colors.red,
+                    color: Colors.white70,
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
@@ -63,27 +63,12 @@ class _PuzzleGameState extends State<PuzzleGame> {
                           key: globalKey,
                           size: constraints.biggest,
                           imageBackGround: Image(
-                            image: AssetImage('images/shoaib.png'),
+                            image: AssetImage('images/oil-1.jpg'),
                           ),
                           sizePuzzle: valueSlider.toInt(),
                         ),
                       );
                     },
-                  ),
-                ),
-                Container(
-                  child: Slider(
-                    min: 2,
-                    max: 11,
-                    divisions: 10,
-                    label: '${valueSlider.toInt().toString()}',
-                    onChanged: (double value) {
-                      setState(() {
-                        valueSlider = value.toPrecision(0);
-                        print(valueSlider);
-                      });
-                    },
-                    value: valueSlider,
                   ),
                 ),
               ],
@@ -113,6 +98,8 @@ class SlidePuzzleWidget extends StatefulWidget {
   final Image imageBackGround;
   final int sizePuzzle;
 
+  //Function to generate puzzle
+
   @override
   State<SlidePuzzleWidget> createState() => _SlidePuzzleWidgetState();
 }
@@ -135,8 +122,33 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
   //flag already start slide
   bool startSlide = false;
 
+  //movement count
+  int movementCount = -90;
+
   //check current swap process for reverse checking
   late List<int> process;
+
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  void dispose() {
+    //...
+    super.dispose();
+
+    //...
+  }
+
+  //
+  // @override
+  // didChangeDependencies(){
+  //   super.didChangeDependencies();
+  //   generatePuzzle();
+  // }
+
+  bool isFinish = true;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +158,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // need two column children one for the image and the other for the buttons
+
         Container(
           padding: EdgeInsets.all(widget.innerPadding),
           width: widget.size.width,
@@ -162,7 +175,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                   key: _globalKey,
                   child: Container(
                     padding: EdgeInsets.all(10),
-                    color: Colors.green,
+                    color: Colors.white,
                     height: double.maxFinite,
                     child: widget.imageBackGround,
                   ),
@@ -211,6 +224,18 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                       child: GestureDetector(
                         onTap: () {
                           changePos(slideObject.indexCurrent);
+
+                          if (slideObject.indexDefault ==
+                                  slideObject.indexCurrent + 1 &&
+                              slideObject.indexCurrent == 7) {
+                            setState(() {
+                              isFinish = false;
+                            });
+                          } else {
+                            setState(() {
+                              isFinish = true;
+                            });
+                          }
                         }, //changePos(slideObject.indexCurrent),
                         child: SizedBox(
                           width: slideObject.size.width,
@@ -227,7 +252,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                                 Center(
                                   child: Text(
                                     "${slideObject.indexDefault}",
-                                    style: TextStyle(fontSize: 30.0),
+                                    style: TextStyle(
+                                        fontSize: 30.0, color: Colors.red),
                                   ),
                                 ),
 
@@ -252,30 +278,42 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    generatePuzzle();
-                  },
-                  child: Text('Generate'),
-                ),
+                        style: ButtonStyle(),
+                        onPressed:startSlide
+                            ? null
+                            :  () {
+                          //await generatePuzzle();
+
+
+
+                          //  generateTry();
+                          setState(() {
+                            generatePuzzle();
+                            startSlide = true;
+                          });
+                        },
+                        child: Text(
+                          'Play',
+                          style: TextStyle(fontSize: 25.0),
+                        ),
+                      ),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: ElevatedButton(
+              //     onPressed: () {
+              //       startSlide ? null : () => reversePuzzle();
+              //     },
+              //     child: Text('Reverse'),
+              //   ),
+              // ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                   startSlide?null:()=>  reversePuzzle();
-                  },
-                  child: Text('Reverse'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    clearPuzzle();
-                  },
-                  child: Text('Clear'),
+                  onPressed: isFinish ? null : () {},
+                  child: Text('Finish',style: TextStyle(fontSize: 25.0),),
                 ),
               ),
             ],
@@ -348,9 +386,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     slideObjects?.last.empty = true;
 
-
-    startSlide = false;
-    setState((){});
+    //startSlide = false;
+    setState(() {});
 
     //swap block place
     //swap true we swap horizontal line, false we swap vertical
@@ -362,8 +399,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
     process = [];
 
     //size puzzle shuffle
-    for (var i = 0; i < widget.sizePuzzle * 20; i++) {
-      for (var j = 0; j < widget.sizePuzzle/2; j++) {
+    for (var i = 0; i < widget.sizePuzzle * 5; i++) {
+      for (var j = 0; j < widget.sizePuzzle / 2; j++) {
         SlideObject slideObjectEmpty = getEmptyObject();
 
         int emptyIndex = slideObjectEmpty.indexCurrent;
@@ -386,12 +423,14 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
         changePos(randKey);
 
+        // print('is this where the movement happens $movementCount');
+
         swap = !swap;
       }
     }
 
-   // startSlide = false;
-    setState((){});
+    // startSlide = false;
+    setState(() {});
     //generating random image
 
     //get empty slide object form list
@@ -442,12 +481,18 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
             puzzle.indexCurrent != emptyIndex)
         .toList();
 
+    //print(rangeMoves.length);
+
     //check empty Index under or above current touch
 
-    if (emptyIndex < indexCurrent)
+    if (emptyIndex < indexCurrent) {
+      movementCount++;
       rangeMoves.sort((a, b) => a.indexCurrent < b.indexCurrent ? 1 : 0);
-    else
+    } else {
+      movementCount++;
       rangeMoves.sort((a, b) => a.indexCurrent < b.indexCurrent ? 0 : 1);
+    }
+    print(movementCount);
 
     //check if rangeMoves is exist then proceed swap position
 
@@ -469,10 +514,11 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     //
     if (slideObjects!
-            .where((slideObject) =>
-                slideObject.indexCurrent == slideObject.indexDefault - 1)
-            .length ==
-        slideObjects!.length&&!startSlide) {
+                .where((slideObject) =>
+                    slideObject.indexCurrent == slideObject.indexDefault - 1)
+                .length ==
+            slideObjects!.length &&
+        !startSlide) {
       print('success');
       success = true;
     } else {
@@ -502,9 +548,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
         )
         .toList();
 
-
     process = [];
-    setState((){});
+    setState(() {});
   }
 }
 

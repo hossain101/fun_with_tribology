@@ -32,7 +32,7 @@ class FunWithTribology extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.acmeTextTheme(),
       ),
-      initialRoute: WelcomeScreen.id,
+      initialRoute: PuzzleMenu.id,
       routes: {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
