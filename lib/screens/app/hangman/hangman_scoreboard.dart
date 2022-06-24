@@ -26,7 +26,7 @@ class _HangmanScoreBoardState extends State<HangmanScoreBoard> {
   List players = [];
 
   void getScore() async {
-    final gamePlayers = await _firestore.collection('score').get();
+    final gamePlayers = await _firestore.collection('HangmanScore').get();
     for (int i = 0; i < gamePlayers.size; i++) {
       setState(() {});
       score = (gamePlayers.docs[i]['score']);
@@ -48,7 +48,7 @@ class _HangmanScoreBoardState extends State<HangmanScoreBoard> {
 
     setState((){isLoading = true;});
     try {
-      await _firestore.collection('score').get().then((querySnapshot) {
+      await _firestore.collection('HangmanScore').get().then((querySnapshot) {
         querySnapshot.docs.forEach((element) {
           scoreData.add(element.data());
           setState((){isLoading = false;});

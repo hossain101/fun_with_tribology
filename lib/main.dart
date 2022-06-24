@@ -12,6 +12,7 @@ import 'package:fun_with_tribology/screens/app/general_screens/menu_screen.dart'
 import 'package:fun_with_tribology/screens/app/authentication/registration_screen.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_game.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_menu.dart';
+import 'package:fun_with_tribology/screens/app/puzzle/puzzle_question.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_scoreboard.dart';
 import 'package:fun_with_tribology/screens/app/general_screens/welcome_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,7 +33,7 @@ class FunWithTribology extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.acmeTextTheme(),
       ),
-      initialRoute: PuzzleMenu.id,
+      initialRoute: PuzzleQuestion.id,
       routes: {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
@@ -48,7 +49,8 @@ class FunWithTribology extends StatelessWidget {
         AddHangmanQuestion.id: (context) => AddHangmanQuestion(),
         HangmanGame.id: (context) => HangmanGame(),
         PuzzleGame.id: (context) => PuzzleGame(),
-      },
+        PuzzleQuestion.id:(context)=>PuzzleQuestion(),
+      }
     );
   }
 }

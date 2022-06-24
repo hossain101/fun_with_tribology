@@ -1,15 +1,22 @@
 import 'dart:math';
 import 'dart:ui';
 import 'dart:typed_data';
+import 'package:firebase_core/firebase_core.dart';
 
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fun_with_tribology/constants.dart';
+import 'package:fun_with_tribology/screens/app/puzzle/puzzle_question.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as image;
 import 'dart:async';
 
 // ignore_for_file: prefer_const_constructors
+
 
 class PuzzleGame extends StatefulWidget {
   const PuzzleGame({Key? key}) : super(key: key);
@@ -123,7 +130,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
   bool startSlide = false;
 
   //movement count
-  int movementCount = -90;
+  int movementCount = -30;
 
   //check current swap process for reverse checking
   late List<int> process;
@@ -132,6 +139,8 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
   initState() {
     // TODO: implement initState
     super.initState();
+    getCurrentUser();
+    setState((){});
   }
 
   void dispose() {
@@ -140,6 +149,23 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     //...
   }
+
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  User? loggedInUser;
+
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser!.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
 
   //
   // @override
@@ -280,13 +306,11 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: ElevatedButton(
-                        style: ButtonStyle(),
-                        onPressed:startSlide
-                            ? null
-                            :  () {
+                  style: ButtonStyle(),
+                  onPressed: startSlide
+                      ? null
+                      : () {
                           //await generatePuzzle();
-
-
 
                           //  generateTry();
                           setState(() {
@@ -294,11 +318,11 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                             startSlide = true;
                           });
                         },
-                        child: Text(
-                          'Play',
-                          style: TextStyle(fontSize: 25.0),
-                        ),
-                      ),
+                  child: Text(
+                    'Play',
+                    style: TextStyle(fontSize: 25.0),
+                  ),
+                ),
               ),
               // Padding(
               //   padding: const EdgeInsets.all(8.0),
@@ -312,8 +336,25 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: ElevatedButton(
-                  onPressed: isFinish ? null : () {},
-                  child: Text('Finish',style: TextStyle(fontSize: 25.0),),
+                  onPressed: isFinish
+                      ? null
+                      : () {
+                          _firestore
+                              .collection('PuzzleScore')
+                              .doc('${loggedInUser!.email}')
+                              .set({
+                            'score': movementCount,
+                            'sender': loggedInUser!.email,
+                            'time': FieldValue.serverTimestamp()
+                          });
+
+                          Navigator.pushReplacementNamed(
+                              context, PuzzleQuestion.id);
+                        },
+                  child: Text(
+                    'Finish',
+                    style: TextStyle(fontSize: 25.0),
+                  ),
                 ),
               ),
             ],

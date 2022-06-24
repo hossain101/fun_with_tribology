@@ -222,7 +222,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                           });
 
 
-                                          _firestore.collection('score').doc('${loggedInUser!.email}').set({
+                                          _firestore.collection('HangmanScore').doc('${loggedInUser!.email}').set({
                                             'score': score.round(),
                                             'sender': loggedInUser!.email,
                                             'time': FieldValue.serverTimestamp()});
@@ -243,7 +243,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                             isLoading = true;
                                           });
 
-                                          _firestore.collection('score').doc('${loggedInUser!.email}').set({
+                                          _firestore.collection('HangmanScore').doc('${loggedInUser!.email}').set({
                                             'score': score.round(),
                                             'sender': loggedInUser!.email,
                                             'time': FieldValue.serverTimestamp()});
