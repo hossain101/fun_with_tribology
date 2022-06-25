@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'dart:typed_data';
 import 'package:firebase_core/firebase_core.dart';
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,21 @@ import 'package:image/image.dart' as image;
 import 'dart:async';
 
 // ignore_for_file: prefer_const_constructors
+final _firestore = FirebaseFirestore.instance;
+final _auth = FirebaseAuth.instance;
+User? loggedInUser;
 
+void getCurrentUser() async {
+  try {
+    final user = await _auth.currentUser;
+    if (user != null) {
+      loggedInUser = user;
+      print(loggedInUser!.email);
+    }
+  } catch (e) {
+    print(e);
+  }
+}
 
 class PuzzleGame extends StatefulWidget {
   const PuzzleGame({Key? key}) : super(key: key);
@@ -31,13 +43,49 @@ class _PuzzleGameState extends State<PuzzleGame> {
   //this is where i can change the grid size of the puzzle
   double valueSlider = 3;
 
+ var networkImage  ;
+
+ bool isLoading =false;
+
   GlobalKey<_SlidePuzzleWidgetState> globalKey = GlobalKey();
+
+  Future<void> getLink() async {
+    setState(() {
+      isLoading = true;
+    });
+    final puzzleQuestion = await _firestore.collection('PuzzleQuestions').get();
+
+    print(puzzleQuestion.docs[puzzleQuestion.size - 1]['link']);
+
+    networkImage = await puzzleQuestion.docs[puzzleQuestion.size - 1]['link']
+       ;
+
+
+    setState(() {
+        isLoading = false;
+    });
+  }
+
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+
+   getLink();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     double _border = 5;
     return Scaffold(
-      body: SafeArea(
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : SafeArea(
         child: KScreenDecoration(
           decorationChild: Container(
             child: Column(
@@ -70,7 +118,7 @@ class _PuzzleGameState extends State<PuzzleGame> {
                           key: globalKey,
                           size: constraints.biggest,
                           imageBackGround: Image(
-                            image: AssetImage('images/oil-1.jpg'),
+                            image: NetworkImage('$networkImage'),
                           ),
                           sizePuzzle: valueSlider.toInt(),
                         ),
@@ -140,7 +188,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
-    setState((){});
+    setState(() {});
   }
 
   void dispose() {
@@ -149,23 +197,6 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
 
     //...
   }
-
-  final _firestore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-  User? loggedInUser;
-
-  void getCurrentUser() async {
-    try {
-      final user = await _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-        print(loggedInUser!.email);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
 
   //
   // @override
