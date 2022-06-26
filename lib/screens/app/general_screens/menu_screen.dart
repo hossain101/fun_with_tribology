@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
 import 'package:fun_with_tribology/screens/app/components/rounded_button.dart';
 import 'package:fun_with_tribology/screens/app/components/top_right_button.dart';
-import 'package:fun_with_tribology/screens/app/general_screens/editProfile_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/game_rules.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_menu.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_menu.dart';
 
@@ -20,10 +20,10 @@ class MenuScreen extends StatelessWidget {
             children: [
               //used Align to move the button to the right.
               TopRightButton(
-                title: 'Edit Profile',
-                btnIcon: Icons.person,
+                title: 'Game Rules',
+                btnIcon: Icons.rule_sharp,
                 funcOnPressed: () =>
-                    Navigator.pushNamed(context, EditProfile.id),
+                    Navigator.pushNamed(context, GameRules.id),
                 btnPadding: EdgeInsets.only(left: 20),
               ),
 

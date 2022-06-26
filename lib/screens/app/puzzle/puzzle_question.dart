@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/constants.dart';
+import 'package:fun_with_tribology/screens/app/puzzle/puzzle_scoreboard.dart';
 import 'package:fun_with_tribology/screens/app/puzzle/puzzle_widgets.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -17,13 +18,12 @@ class PuzzleQuestion extends StatefulWidget {
 }
 
 class _PuzzleQuestionState extends State<PuzzleQuestion> {
-
   int correctCount = 0;
   bool isLoading = false;
 
   int movementCount = 0;
 
-  var question , answer ;
+  var question, answer;
 
   Future<void> getQuestion() async {
     setState(() {
@@ -59,10 +59,6 @@ class _PuzzleQuestionState extends State<PuzzleQuestion> {
     });
   }
 
-
-
-
-
   void getCurrentUser() async {
     try {
       final user = await _auth.currentUser;
@@ -89,6 +85,9 @@ class _PuzzleQuestionState extends State<PuzzleQuestion> {
     });
   }
 
+  int score = 0;
+  bool win = false;
+
   @override
   initState() {
     // TODO: implement initState
@@ -104,137 +103,162 @@ class _PuzzleQuestionState extends State<PuzzleQuestion> {
     return Scaffold(
       body: isLoading
           ? Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
           : SafeArea(
-        child: KScreenDecoration(
-          decorationChild: Container(
-            child: Column(
-              children: [
-                AutoSizeText(
-                  question!.toString(),
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.white,
+              child: KScreenDecoration(
+                decorationChild: Container(
+                  child: Column(
+                    children: [
+                      AutoSizeText(
+                        question!.toString(),
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.white,
+                        ),
+                      ),
+                      //hidden word
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: answer
+                              .toString()
+                              .split('')
+                              .map(
+                                (e) => Letter(
+                                  e.toUpperCase(),
+                                  !PuzzleGameLogic.selectedChar.contains(e),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+
+                      //keyboard
+                      Expanded(
+                        flex: 3,
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 350,
+                          child: GridView.count(
+                            crossAxisCount: 7,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                            padding: EdgeInsets.all(8.0),
+                            children: alphabets.map((alphabets) {
+                              return RawMaterialButton(
+                                child: Text(
+                                  alphabets,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white70),
+                                ),
+                                onPressed: PuzzleGameLogic.selectedChar
+                                        .contains(alphabets)
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          print(PuzzleGameLogic.selectedChar);
+                                          PuzzleGameLogic.selectedChar
+                                              .add(alphabets.toUpperCase());
+                                        });
+
+                                        score = (((correctCount + 30) /
+                                                    (PuzzleGameLogic
+                                                            .selectedChar
+                                                            .length +
+                                                        movementCount)) *
+                                                100)
+                                            .toInt();
+
+                                        if (!answer!.split('').contains(
+                                              alphabets.toUpperCase(),
+                                            )) {
+                                          PuzzleGameLogic.tries++;
+                                        }
+                                        if (answer!.split('').contains(
+                                              alphabets.toUpperCase(),
+                                            )) {
+                                          correctCount++;
+                                        }
+
+                                        if (correctCount >= answer!.length) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+
+                                          _firestore
+                                              .collection('PuzzleScore')
+                                              .doc('${loggedInUser!.email}')
+                                              .set({
+                                            'score': score.round(),
+                                            'sender': loggedInUser!.email,
+                                            'time': FieldValue.serverTimestamp()
+                                          });
+                                          print(score.toString());
+                                          PuzzleGameLogic.tries = 0;
+                                          PuzzleGameLogic.selectedChar.clear();
+
+                                          Navigator.pushReplacementNamed(
+                                              context, PuzzleScoreBoard.id);
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+                                        // gameWon();
+
+                                        if (PuzzleGameLogic.tries >= 2) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+
+                                          _firestore
+                                              .collection('PuzzleScore')
+                                              .doc('${loggedInUser!.email}')
+                                              .set({
+                                            'score': score.round(),
+                                            'sender': loggedInUser!.email,
+                                            'time': FieldValue.serverTimestamp()
+                                          });
+
+                                          print(score.toString());
+                                          PuzzleGameLogic.tries = 0;
+                                          PuzzleGameLogic.selectedChar.clear();
+
+                                          Navigator.pushReplacementNamed(
+                                              context, PuzzleScoreBoard.id);
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+
+                                        print(PuzzleGameLogic.tries);
+                                        print(PuzzleGameLogic
+                                            .selectedChar.length);
+                                      },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                fillColor: PuzzleGameLogic.selectedChar
+                                        .contains(alphabets)
+                                    ? Colors.black87
+                                    : Colors.blue,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                //hidden word
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: answer
-                        .toString()
-                        .split('')
-                        .map(
-                          (e) => Letter(
-                            e.toUpperCase(),
-                            !PuzzleGameLogic.selectedChar.contains(e),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-
-                //keyboard
-                Expanded(
-                  flex: 3,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 350,
-                    child: GridView.count(
-                      crossAxisCount: 7,
-                      mainAxisSpacing: 8.0,
-                      crossAxisSpacing: 8.0,
-                      padding: EdgeInsets.all(8.0),
-                      children: alphabets.map((alphabets) {
-                        return RawMaterialButton(
-                          child: Text(
-                            alphabets,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white70),
-                          ),
-                          onPressed: PuzzleGameLogic.selectedChar
-                                  .contains(alphabets)
-                              ? null
-                              : () {
-                                  getMovementCount();
-                                  setState(() {
-                                    print(PuzzleGameLogic.selectedChar);
-                                    PuzzleGameLogic.selectedChar
-                                        .add(alphabets.toUpperCase());
-                                    // getWord();
-                                  });
-
-                                  //  score = ((correctCount/PuzzleGameLogic.selectedChar.length) *100) ;
-
-                                  if (!answer!.split('').contains(
-                                        alphabets.toUpperCase(),
-                                      )) {
-                                    PuzzleGameLogic.tries++;
-                                  }
-                                  if (answer!.split('').contains(
-                                        alphabets.toUpperCase(),
-                                      )) {
-                                    correctCount++;
-                                  }
-
-                                  if (correctCount >= answer!.length) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-
-                                    PuzzleGameLogic.tries = 0;
-                                    PuzzleGameLogic.selectedChar.clear();
-
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  }
-                                  // gameWon();
-
-                                  if (PuzzleGameLogic.tries >= 6) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-
-                                    PuzzleGameLogic.tries = 0;
-                                    PuzzleGameLogic.selectedChar.clear();
-
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-
-                                    //   if (win ==true) {
-                                    //     Navigator.pushReplacementNamed(
-                                    //         context, HangmanScoreBoard.id);
-                                    //   }
-                                  }
-
-                                  print(PuzzleGameLogic.tries);
-                                  print(PuzzleGameLogic.selectedChar.length);
-                                },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          fillColor:
-                              PuzzleGameLogic.selectedChar.contains(alphabets)
-                                  ? Colors.black87
-                                  : Colors.blue,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

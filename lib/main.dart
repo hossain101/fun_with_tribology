@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_with_tribology/screens/app/admin_function/hangman/add_hangman_question_screen.dart';
 import 'package:fun_with_tribology/screens/app/admin_function/puzzle/add_puzzle_question_screen.dart';
 import 'package:fun_with_tribology/screens/app/admin_function/admin_menu_screen.dart';
-import 'package:fun_with_tribology/screens/app/general_screens/editProfile_screen.dart';
+import 'package:fun_with_tribology/screens/app/general_screens/game_rules.dart';
 import 'package:fun_with_tribology/screens/app/authentication/login_screen.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_game.dart';
 import 'package:fun_with_tribology/screens/app/hangman/hangman_menu.dart';
@@ -33,13 +33,13 @@ class FunWithTribology extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.acmeTextTheme(),
       ),
-      initialRoute: PuzzleQuestion.id,
+      initialRoute: WelcomeScreen.id,
       routes: {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         LoginScreen.id: (context) => LoginScreen(),
         MenuScreen.id: (context) => const MenuScreen(),
-        EditProfile.id: (context) => EditProfile(),
+        GameRules.id: (context) => GameRules(),
         PuzzleMenu.id: (context) => PuzzleMenu(),
         HangmanMenu.id: (context) => HangmanMenu(),
         PuzzleScoreBoard.id: (context) => PuzzleScoreBoard(),

@@ -150,8 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         if (user != Null) {
                           Fluttertoast.showToast(msg: 'Login Successful');
-                          Navigator.pushNamed(context, MenuScreen.id);
-
+                          Navigator.pushNamedAndRemoveUntil(context, MenuScreen.id, (Route<dynamic> route) => true  );
                           setState(() {
                             showSpinner = false;
                           });
